@@ -45,3 +45,7 @@ textarea { flex: 1; resize: none; max-height: 200px; padding: 8px; border-radius
 textarea:focus { outline: none; border-color: var(--accent); }
 #send { background: var(--accent); color: #fff; border-color: var(--accent); height: 36px; }
 #stop { height: 36px; }
+.badge { font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 999px;
+         border: 1px solid var(--accent); color: var(--accent); }
+.msg.info { align-self: center; font-size: 12px; color: var(--muted); text-align: center; }
+body[data-mode="pro"] .api-only { display: none; }

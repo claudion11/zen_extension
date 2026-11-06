@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Zen Claude",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Chatte mit Claude direkt in der Seitenleiste von Zen Browser.",
   "icons": {
     "48": "icons/icon.svg",
@@ -22,6 +22,7 @@
     "storage",
     "menus",
     "tabs",
+    "clipboardWrite",
     "activeTab",
     "<all_urls>",
     "https://api.anthropic.com/*"

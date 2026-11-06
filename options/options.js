@@ -1,4 +1,5 @@
 const DEFAULTS = {
+  mode: "api",
   apiKey: "",
   model: "claude-sonnet-5-5",
   maxTokens: 4096,
@@ -7,12 +8,22 @@ const DEFAULTS = {
 const $ = (id) => document.getElementById(id);
 const status = (t) => { $("status").textContent = t; };
 
+const currentMode = () => document.querySelector('input[name="mode"]:checked')?.value || "api";
+function updateMode() {
+  const pro = currentMode() === "pro";
+  $("apiSettings").hidden = pro;
+  $("test").hidden = pro;
+}
+document.querySelectorAll('input[name="mode"]').forEach((r) => r.addEventListener("change", updateMode));
+
 function currentModel() {
   return $("modelSelect").value === "custom" ? $("customModel").value.trim() : $("modelSelect").value;
 }
 
 async function load() {
   const s = { ...DEFAULTS, ...(await browser.storage.local.get(Object.keys(DEFAULTS))) };
+  document.querySelector(`input[name="mode"][value="${s.mode === "pro" ? "pro" : "api"}"]`).checked = true;
+  updateMode();
   $("apiKey").value = s.apiKey;
   $("maxTokens").value = s.maxTokens;
   $("systemPrompt").value = s.systemPrompt;
@@ -26,6 +37,7 @@ $("modelSelect").addEventListener("change", () => { $("customModel").hidden = $(
 
 $("save").addEventListener("click", async () => {
   await browser.storage.local.set({
+    mode: currentMode(),
     apiKey: $("apiKey").value.trim(),
     model: currentModel() || DEFAULTS.model,
     maxTokens: Number($("maxTokens").value) || DEFAULTS.maxTokens,

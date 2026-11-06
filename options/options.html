@@ -17,11 +17,24 @@
     button.secondary { background:none; color:var(--fg); border:1px solid var(--border); }
     #status { color:var(--muted); }
     a { color:var(--accent); }
+    fieldset { border:1px solid var(--border); border-radius:10px; padding:8px 12px 12px; }
+    legend { font-weight:600; padding:0 4px; }
+    label.radio { display:flex; gap:8px; align-items:flex-start; font-weight:normal; margin-top:8px; cursor:pointer; }
+    label.radio input { width:auto; margin-top:3px; }
   </style>
 </head>
 <body>
   <h2>Zen Claude</h2>
 
+  <fieldset>
+    <legend>Modus</legend>
+    <label class="radio"><input type="radio" name="mode" value="api">
+      <span><b>API-Schlüssel</b><small>Antworten direkt in der Seitenleiste. Kosten nach Verbrauch über console.anthropic.com.</small></span></label>
+    <label class="radio"><input type="radio" name="mode" value="pro">
+      <span><b>Claude Pro/Max-Konto</b><small>Öffnet claude.ai in einem neuen Tab mit deiner Nachricht. Keine API-Kosten – du musst in claude.ai angemeldet sein.</small></span></label>
+  </fieldset>
+
+  <div id="apiSettings">
   <label>Anthropic API-Schlüssel
     <small>Erstellen unter <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>. Wird nur lokal im Browser gespeichert.</small>
     <input id="apiKey" type="password" placeholder="sk-ant-…" autocomplete="off">
@@ -45,6 +58,8 @@
   <label>System-Prompt
     <textarea id="systemPrompt"></textarea>
   </label>
+
+  </div>
 
   <div class="row">
     <button id="save">Speichern</button>

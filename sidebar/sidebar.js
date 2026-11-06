@@ -1,12 +1,14 @@
 // Seitenleiste: Chat mit Claude über die Anthropic Messages API (Streaming).
 
 const DEFAULTS = {
+  mode: "api",             // "api" = eigener API-Schlüssel, "pro" = claude.ai mit Pro-Konto
   apiKey: "",
   model: "claude-sonnet-5-5",
   maxTokens: 4096,
   systemPrompt: "Du bist ein hilfreicher Assistent in der Seitenleiste des Zen Browsers. Antworte präzise und in der Sprache des Nutzers.",
 };
 const MAX_PAGE_CHARS = 60000;
+const PRO_MAX_URL_CHARS = 8000;   // längere Prompts gehen über die Zwischenablage
 
 const $ = (id) => document.getElementById(id);
 const els = {
@@ -22,7 +24,15 @@ let controller = null;     // AbortController für laufende Anfrage
 async function loadSettings() {
   const s = await browser.storage.local.get(Object.keys(DEFAULTS));
   settings = { ...DEFAULTS, ...s };
-  els.noKey.hidden = !!settings.apiKey;
+  els.noKey.hidden = settings.mode === "pro" || !!settings.apiKey;
+  document.body.dataset.mode = settings.mode;
+  $("modeBadge").textContent = settings.mode === "pro" ? "Pro" : "API";
+  els.input.placeholder = settings.mode === "pro"
+    ? "Nachricht → öffnet claude.ai  (Enter = senden)"
+    : "Nachricht an Claude…  (Enter = senden, Shift+Enter = Zeile)";
+  $("modeBadge").title = settings.mode === "pro"
+    ? "Pro-Modus: Nachrichten werden in claude.ai mit deinem Konto geöffnet"
+    : "API-Modus: Antworten direkt hier über deinen API-Schlüssel";
 }
 
 async function loadHistory() {
@@ -147,6 +157,7 @@ async function send(text, { withPage = els.includePage.checked, tabId, display }
   text = text.trim();
   if (!text || controller) return;
   await loadSettings();
+  if (settings.mode === "pro") return sendToClaudeAi(text, { withPage, tabId, display });
   if (!settings.apiKey) { els.noKey.hidden = false; return; }
 
   let content = text;
@@ -197,6 +208,42 @@ async function send(text, { withPage = els.includePage.checked, tabId, display }
   controller = null;
   setBusy(false);
   els.input.focus();
+}
+
+// ---------- Pro-Modus: an claude.ai übergeben ----------
+async function sendToClaudeAi(text, { withPage, tabId, display }) {
+  let prompt = text;
+  if (withPage) {
+    try {
+      const page = await getPageContext(tabId);
+      prompt = `Webseite: ${page.title}\n${page.url}\n\n"""\n${page.text}\n"""\n\n${text}`;
+    } catch (e) {
+      addBubble("error", e.message);
+      return;
+    }
+  }
+
+  const encoded = encodeURIComponent(prompt);
+  let url = "https://claude.ai/new";
+  let note;
+  if (encoded.length <= PRO_MAX_URL_CHARS) {
+    url += "?q=" + encoded;
+    note = "In claude.ai geöffnet ↗";
+  } else {
+    try {
+      await navigator.clipboard.writeText(prompt);
+      note = "Zu lang für einen Link – der Text liegt in der Zwischenablage. In claude.ai mit Strg+V einfügen ↗";
+    } catch {
+      addBubble("error", "Der Text ist zu lang für einen Link und konnte nicht in die Zwischenablage kopiert werden.");
+      return;
+    }
+  }
+
+  addBubble("user", display || text);
+  const info = addBubble("info", note);
+  info.title = "Die Antwort erscheint im claude.ai-Tab und läuft über dein Pro-Konto.";
+  els.input.value = ""; autosize();
+  await browser.tabs.create({ url, active: true });
 }
 
 // ---------- Aufgaben aus dem Kontextmenü ----------
