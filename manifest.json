@@ -1,0 +1,56 @@
+{
+  "manifest_version": 2,
+  "name": "Zen Claude",
+  "version": "1.0.0",
+  "description": "Chatte mit Claude direkt in der Seitenleiste von Zen Browser.",
+  "icons": {
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "zen-claude@extension",
+      "strict_min_version": "115.0",
+      "data_collection_permissions": {
+        "required": [
+          "websiteContent"
+        ]
+      }
+    }
+  },
+  "permissions": [
+    "storage",
+    "menus",
+    "tabs",
+    "activeTab",
+    "<all_urls>",
+    "https://api.anthropic.com/*"
+  ],
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "sidebar_action": {
+    "default_title": "Claude",
+    "default_panel": "sidebar/sidebar.html",
+    "default_icon": "icons/icon.svg",
+    "open_at_install": true
+  },
+  "browser_action": {
+    "default_title": "Claude-Seitenleiste umschalten",
+    "default_icon": "icons/icon.svg"
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": false
+  },
+  "commands": {
+    "_execute_sidebar_action": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y"
+      },
+      "description": "Claude-Seitenleiste öffnen/schließen"
+    }
+  }
+}

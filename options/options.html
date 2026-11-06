@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>Zen Claude – Einstellungen</title>
+  <style>
+    :root { --bg:#faf9f5; --fg:#1f1e1d; --muted:#6b6a66; --border:#e3e1d9; --accent:#d97757; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#1f1e1d; --fg:#ece9e1; --muted:#a09d96; --border:#3a3936; } }
+    body { background:var(--bg); color:var(--fg); font:14px/1.5 system-ui, sans-serif; padding:16px; max-width:560px; }
+    label { display:block; font-weight:600; margin-top:14px; }
+    small { color:var(--muted); font-weight:normal; display:block; }
+    input, select, textarea { width:100%; box-sizing:border-box; margin-top:4px; padding:7px; border-radius:8px;
+      border:1px solid var(--border); background:var(--bg); color:var(--fg); font:inherit; }
+    textarea { min-height:90px; resize:vertical; }
+    .row { display:flex; gap:8px; align-items:center; margin-top:16px; }
+    button { background:var(--accent); color:#fff; border:0; border-radius:8px; padding:8px 14px; cursor:pointer; font:inherit; }
+    button.secondary { background:none; color:var(--fg); border:1px solid var(--border); }
+    #status { color:var(--muted); }
+    a { color:var(--accent); }
+  </style>
+</head>
+<body>
+  <h2>Zen Claude</h2>
+
+  <label>Anthropic API-Schlüssel
+    <small>Erstellen unter <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a>. Wird nur lokal im Browser gespeichert.</small>
+    <input id="apiKey" type="password" placeholder="sk-ant-…" autocomplete="off">
+  </label>
+
+  <label>Modell
+    <select id="modelSelect">
+      <option value="claude-sonnet-5-5">Claude Sonnet 5.5 (empfohlen)</option>
+      <option value="claude-opus-5-5">Claude Opus 5.5 (am stärksten)</option>
+      <option value="claude-haiku-5-5">Claude Haiku 5.5 (am schnellsten)</option>
+      <option value="claude-fable-5-1">Claude Fable 5.1</option>
+      <option value="custom">Eigene Modell-ID…</option>
+    </select>
+    <input id="customModel" placeholder="z. B. claude-…" hidden>
+  </label>
+
+  <label>Max. Antwortlänge (Tokens)
+    <input id="maxTokens" type="number" min="256" max="64000" step="256">
+  </label>
+
+  <label>System-Prompt
+    <textarea id="systemPrompt"></textarea>
+  </label>
+
+  <div class="row">
+    <button id="save">Speichern</button>
+    <button id="test" class="secondary">Verbindung testen</button>
+    <button id="clear" class="secondary">Chatverlauf löschen</button>
+    <span id="status"></span>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
