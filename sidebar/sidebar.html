@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Claude</title>
+  <link rel="stylesheet" href="sidebar.css">
+</head>
+<body>
+  <header>
+    <div class="brand"><img src="../icons/icon.svg" alt=""> Claude <span id="modeBadge" class="badge">API</span></div>
+    <div class="actions">
+      <button id="summarize" title="Aktuelle Seite zusammenfassen">📄</button>
+      <button id="newChat" class="api-only" title="Neuer Chat">＋</button>
+      <button id="settings" title="Einstellungen">⚙</button>
+    </div>
+  </header>
+
+  <div id="noKey" class="notice" hidden>
+    Kein API-Schlüssel hinterlegt. <a href="#" id="openOptions">Einstellungen öffnen</a>
+  </div>
+
+  <main id="messages" aria-live="polite">
+    <div class="empty" id="empty">
+      <p>Frag mich etwas – oder markiere Text auf einer Seite und nutze das Rechtsklick-Menü.</p>
+    </div>
+  </main>
+
+  <footer>
+    <label class="ctx"><input type="checkbox" id="includePage"> Aktuelle Seite als Kontext</label>
+    <form id="form">
+      <textarea id="input" rows="1" placeholder="Nachricht an Claude…  (Enter = senden, Shift+Enter = Zeile)"></textarea>
+      <button type="submit" id="send" title="Senden">➤</button>
+      <button type="button" id="stop" title="Stoppen" hidden>■</button>
+    </form>
+  </footer>
+
+  <script src="markdown.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>
